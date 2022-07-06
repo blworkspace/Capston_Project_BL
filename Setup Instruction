@@ -1,0 +1,122 @@
+Create instances using terraform by running the following commands:
+  export AWS_ACCESS_KEY_ID="<your aws access key>" 	#this command will store aws access key
+  export AWS_SECRET_ACCESS_KEY="<your aws secret key>" 	#this command will store aws secret key
+  export AWS_SESSION_TOKEN="<your aws security token>" 	# this command will store aws security token
+Verify keys are stored by running the following commands:
+  echo $AWS_ACCESS_KEY_ID="<your access key>" 	#this command will display aws access key saved
+  echo $AWS_SECRET_ACCESS_KEY="<your secret key>" 	#this command will display aws secret key saved
+  echo $AWS_SESSION_TOKEN="<your security token>" 	#this command will display aws security token saved
+Create a project directory by running the following command:
+  mkdir capstone    #directory called capstone is created
+Create a script that will set the AWS region:
+  aws.tf script sets AWS region when terraform is applied
+Create a script that will create multiple instances in AWS
+  main.tf script create multiple instanaces in AWS
+Run the following terraform commands:
+  terraform init  #initializes terraform
+  terraform plan  #plans terraform
+  terraform apply #applies terraform
+  #-----Screenshot labeled "EC2 Instances.png" shows 3 instances that are running after terraform apply
+Change the protection setting on myKey.pem file by running the following command:
+  chmod 400 myKey.pem    #this command will protect the myKey.pem file from overwriting
+###---Instructions below will be for other two instances: first is master
+SSH into one of the instance by running the following command:
+  ssh -i myKey.pem ubuntu@<public ip address of an instance>  #ssh'ed into an instance
+  #-----Screenshot labeled "Connected to EC2.png" shows connection to an instance
+Set the hostname as master to distinguish this instance from others by running the following command:
+  sudo hostnamectl set-hostname master.example.com  #sets the instance hostname to master (exit and re-ssh into the instance to view the hostname change)
+Create a script that will install Docker and Kubernetes on master instance
+  install.sh script is created to install Docker and Kubernetes
+Install Docker and Kubenetes on master node by running the following command:
+  sh install.sh   #Docker and Kubernetes is installed on the master instance
+  #-----Screenshot labeled "Installed Docker and Kubernetes on Master.png" shows installation
+###---Instructions below will be for other two instances: second is node1
+SSH into instance by running the following command:
+  ssh -i myKey.pem ubuntu@<public ip address of an instance>  #ssh'ed into an instance
+Set the hostname as node1 to distinguish this instance from others by running the following command:
+  sudo hostnamectl set-hostname node1.example.com  #sets the instance hostname to node1 (exit and re-ssh into the instance to view the hostname change)
+Create a script that will install Docker and Kubernetes on node1 instance
+  node.sh script is created to install Docker and Kubernetes
+Install Docker and Kubenetes on master node by running the following command:
+  sh node.sh   #Docker and Kubernetes is installed on the node1 instance
+  #-----Screenshot labeled "Installed Docker and Kubernetes on Node1.png" shows installation
+###---Instructions below will be for other two instances: third is node2
+SSH into instance by running the following command:
+  ssh -i myKey.pem ubuntu@<public ip address of an instance>  #ssh'ed into an instance
+Set the hostname as node2 to distinguish this instance from others by running the following command:
+  sudo hostnamectl set-hostname node2.example.com  #sets the instance hostname to node2 (exit and re-ssh into the instance to view the hostname change)
+Create a script that will install Docker and Kubernetes on node2 instance
+  node.sh script is created to install Docker and Kubernetes
+Install Docker and Kubenetes on master node by running the following command:
+  sh node.sh   #Docker and Kubernetes is installed on the node2 instance
+  #-----Screenshot labeled "Installed Docker and Kubernetes on Node2.png" shows installation
+###---Back to master instance 
+Copy the genereated token for Node1 and Node2 can be linked:
+  #token should start with "kubeadm token create..."
+###---Back to node1 instance
+Run the copied token as sudo command:
+  sudo kubeadm token create....
+##---Back to node2 instance
+Run the copied token as sudo command:
+  sudo kubeadm token create....
+###---Back to master instnace
+To connect all pods together by running the following command:
+  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  #-----Screenshot labeled "Master is able to see Nodes.png" shows that master can see nodes
+Create multi-tier application script - mysql and wordpress
+  mydb.yml script installs mysql
+  wp.yml script installs wordpress
+  #-----Screenshot labeled "Able to Access WordPress.png" shows that WordPress can be accessed
+Install mysql by running the following command:
+  kubectl create -f mydb.yml  #installs mysql
+  kubectl expose deployment mydb --port=3306  #exposes port
+  kubectl create -f wp.yml  #installs wordpress
+  kubectl expose deployment wp --port=80 --type=NodePort  #exposes port
+  kubectl get pods  #lists all services
+  kubectl get svc   #output of services
+  kubectl get nodes -o wide   #lists all services
+Create network policy script 
+  np.yml script sets network policy
+Install network plicy by running the following command:
+  kubectl create -f np.yml  #installs network policy
+Create users and roles by running the following commands:
+  kubectl create serviceaccount newroleadded  #new role added
+  kubectl create clusterrole newroleadded --verb=get --verb=list --verb=create --verb=update --resource=pods  #create permissions
+  kubectl create clusterrolebinding newroleadded --serviceaccount=default:newroleadded --clusterrole=newroleadded   #grants roles
+  TOKEN=$(kubectl describe secrets "$(kubectl describe serviceaccount newroleadded | grep -i Tokens | awk '{print $2}')" | grep token: | awk '{print $2}')  #sets token
+  kubectl config set-credentials myuser1 --token=$TOKEN   #sets credentials
+  kubectl config set-context newcontextadded --cluster=kubernetes --user=myuser1  #sets user
+  kubectl config use-context newcontextadded  #new context added
+  kubectl get all 
+  kubectl auth can-i get pods --all-namespaces
+  kubectl auth can-i get deployment --all-namespaces
+  kubectl config use-context kubernetes-admin@kubernetes
+  kubectl auth can-i get deployment --all-namespaces
+  #-----Screenshot labeled "Create New User with Permission.png" show new user creation and permission
+Get snapshot of ETCD database by running the following commands:
+  sudo apt update -y
+  sudo apt install etcd-client 
+  hostname -i 
+  kubectl get nodes -o wide
+  export advertise_url=<your ip>:2379
+  echo $advertise_url
+  sudo  ETCDCTL_API=3 etcdctl --endpoints $advertise_url --cacert /etc/kubernetes/pki/etcd/ca.crt --key /etc/kubernetes/pki/etcd/server.key --cert /etc/kubernetes/pki/etcd/server.crt snapshot save test1.db 
+  #-----Screenshot labeled "Snapshot of ETCD.png" show ETCD database
+Setup for HPA by running the following commands:
+  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  kubectl get pods -n kube-system
+  wget -c https://gist.githubusercontent.com/initcron/1a2bd25353e1faa22a0ad41ad1c01b62/raw/008e23f9fbf4d7e2cf79df1dd008de2f1db62a10/k8s-metrics-server.patch.yaml
+  kubectl patch deploy metrics-server -p "$(cat k8s-metrics-server.patch.yaml)" -n kube-system
+  kubectl get pods -n kube-system
+  kubectl top pods
+  kubectl top nodes 
+  kubectl top pods
+Create a script to utilize HPA
+  hpa.yml script is created to utilize HPA
+Install hpa script by running the following command:
+  kubectl create -f hpa.yml
+  #-----Screenshot labeled "Set Criteria - Memory of CPU.png" shows HPA setup
+Set load balancer in AWS by using GUI
+  #-----Screenshot labeled "Load Balancer Setting.png" shows setup of load balancer
+
+  
