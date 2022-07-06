@@ -1,4 +1,0 @@
-Create instances using terraform:
-  Run the following commands:
-    export AWS_ACCESS_KEY_ID="<your session key>"   #this command will store aws access key
-    
