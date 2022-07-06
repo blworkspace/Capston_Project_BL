@@ -77,7 +77,7 @@ Install mysql by running the following command:
   kubectl get nodes -o wide   #lists all services
 Create network policy script 
   np.yml script sets network policy
-Install network plicy by running the following command:
+Install network policy by running the following command:
   kubectl create -f np.yml  #installs network policy
 Create users and roles by running the following commands:
   kubectl create serviceaccount newroleadded  #new role added
