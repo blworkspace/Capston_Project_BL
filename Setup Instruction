@@ -11,7 +11,7 @@ Create a project directory by running the following command:
 Create a script that will set the AWS region:
   aws.tf script sets AWS region when terraform is applied
 Create a script that will create multiple instances in AWS
-  main.tf script create multiple instanaces in AWS
+  main.tf script create multiple instances in AWS
 Run the following terraform commands:
   terraform init  #initializes terraform
   terraform plan  #plans terraform
@@ -27,7 +27,7 @@ Set the hostname as master to distinguish this instance from others by running t
   sudo hostnamectl set-hostname master.example.com  #sets the instance hostname to master (exit and re-ssh into the instance to view the hostname change)
 Create a script that will install Docker and Kubernetes on master instance
   install.sh script is created to install Docker and Kubernetes
-Install Docker and Kubenetes on master node by running the following command:
+Install Docker and Kubernetes on master node by running the following command:
   sh install.sh   #Docker and Kubernetes is installed on the master instance
   #-----Screenshot labeled "Installed Docker and Kubernetes on Master.png" shows installation
 ###---Instructions below will be for other two instances: second is node1
@@ -37,7 +37,7 @@ Set the hostname as node1 to distinguish this instance from others by running th
   sudo hostnamectl set-hostname node1.example.com  #sets the instance hostname to node1 (exit and re-ssh into the instance to view the hostname change)
 Create a script that will install Docker and Kubernetes on node1 instance
   node.sh script is created to install Docker and Kubernetes
-Install Docker and Kubenetes on master node by running the following command:
+Install Docker and Kubernetes on master node by running the following command:
   sh node.sh   #Docker and Kubernetes is installed on the node1 instance
   #-----Screenshot labeled "Installed Docker and Kubernetes on Node1.png" shows installation
 ###---Instructions below will be for other two instances: third is node2
@@ -47,7 +47,7 @@ Set the hostname as node2 to distinguish this instance from others by running th
   sudo hostnamectl set-hostname node2.example.com  #sets the instance hostname to node2 (exit and re-ssh into the instance to view the hostname change)
 Create a script that will install Docker and Kubernetes on node2 instance
   node.sh script is created to install Docker and Kubernetes
-Install Docker and Kubenetes on master node by running the following command:
+Install Docker and Kubernetes on master node by running the following command:
   sh node.sh   #Docker and Kubernetes is installed on the node2 instance
   #-----Screenshot labeled "Installed Docker and Kubernetes on Node2.png" shows installation
 ###---Back to master instance 
@@ -59,7 +59,7 @@ Run the copied token as sudo command:
 ##---Back to node2 instance
 Run the copied token as sudo command:
   sudo kubeadm token create....
-###---Back to master instnace
+###---Back to master instance
 To connect all pods together by running the following command:
   kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
   #-----Screenshot labeled "Master is able to see Nodes.png" shows that master can see nodes
